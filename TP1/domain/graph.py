@@ -4,6 +4,8 @@ class Graph:
   def __init__(self):
     # lista de adjacencia
     self.graph = {}
+    self.numVertices = 0
+    self.numEdges = 0
 
   def addEdge(self, origin: int, dest: int, weight: int):   
     if origin not in self.graph:

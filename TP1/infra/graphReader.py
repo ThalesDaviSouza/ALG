@@ -6,6 +6,9 @@ class GraphReader:
       firstLine = file.readline().strip().split()
       numVertices, numEdges = map(int, firstLine)
       
+      graph.numVertices = numVertices
+      graph.numEdges = numEdges
+      
       for line in file:
         origin, dest, weight = map(int, line.strip().split())
         GraphReader.readEdge(graph, origin, dest, weight)
