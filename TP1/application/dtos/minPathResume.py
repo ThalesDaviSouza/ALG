@@ -1,4 +1,4 @@
 class MinPathResumeDto:
-  def __init__(self, minPathsEdges, minPaths):
+  def __init__(self, minPathsEdges, commonEdges):
     self.minPathsEdges = minPathsEdges
-    self.minPaths = minPaths
+    self.commonEdges = commonEdges
