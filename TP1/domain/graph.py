@@ -7,15 +7,15 @@ class Graph:
     self.numVertices = 0
     self.numEdges = 0
 
-  def addEdge(self, origin: int, dest: int, weight: int):   
+  def addEdge(self, id: int, origin: int, dest: int, weight: int):   
     if origin not in self.graph:
       self.graph[origin] = {}
     
     if dest not in self.graph:
       self.graph[dest] = {}
     
-    self.graph[origin][dest] = Edge(dest, weight)
-    self.graph[dest][origin] = Edge(origin, weight)
+    self.graph[origin][dest] = Edge(id, dest, weight)
+    self.graph[dest][origin] = Edge(id, origin, weight)
 
   def getEdge(self, origin: int, dest: int) -> None | Edge:
     if origin not in self.graph:

@@ -3,21 +3,23 @@ from domain.graph import Graph
 import heapq
 
 INF = -1
-SEM_ANTECESSOR = -2
+NOT_DEFINED = -2
 
-class Resumo:
-  def __init__(self, distances, predecessor):
+class FindResume:
+  def __init__(self, distances, predecessor: list[list], shortestPathsEdges):
     self.distances = distances
     self.predecessor = predecessor
+    self.shortestPathsEdges = shortestPathsEdges
 
 class GraphFind:
   def getArrayId(graphId: int):
     return graphId - 1
 
-  def Dijkstra(graph: Graph, origin: int) -> Resumo:
+  def Dijkstra(graph: Graph, origin: int) -> FindResume:
     distances = [INF for _ in range(graph.numVertices)]
-    predecessor = [SEM_ANTECESSOR for _ in range(graph.numVertices)]
+    predecessor = [[] for _ in range(graph.numVertices)]
     visited = [False for _ in range(graph.numVertices)]
+    shortestPathsEdges = [[] for _ in range(graph.numVertices)]
 
     originId = GraphFind.getArrayId(origin)
     distances[originId] = 0
@@ -48,11 +50,44 @@ class GraphFind:
 
         if (distances[destArrayId] is INF) or (distances[destArrayId] > (currentDistance + weight)):
           distances[destArrayId] = currentDistance + weight
-          predecessor[destArrayId] = current
+          predecessor[destArrayId] = [current]
+          shortestPathsEdges[destArrayId] = [edge.id]
           heapq.heappush(verticesToVisit, (distances[destArrayId], edge.destination))
           continue
 
         if distances[destArrayId] == (currentDistance + weight):
-          print('uma aresta com peso igual')
+          predecessor[destArrayId].append(current)
+          shortestPathsEdges[destArrayId].append(edge.id)
     
-    return Resumo(distances, predecessor)
+    return FindResume(distances, predecessor, shortestPathsEdges)
+
+  def getMinPathEdgesId(resume: FindResume, origin: int, dest: int):
+    minPathsEdges = set()
+    minPaths = GraphFind.getPaths(resume, dest, origin, minPathsEdges)
+
+    print(f'minPathsEdges: {minPathsEdges}')
+    print(f'minPaths: {minPaths}')
+
+  def getPaths(resume: FindResume, current: int, origin: int, minPathsEdges: set):
+    if current == origin:
+      return set()
+    
+    currentId = GraphFind.getArrayId(current)
+    commonEdges = set()
+    first = True
+
+    for id, predecessor in enumerate(resume.predecessor[currentId]):
+      edge = resume.shortestPathsEdges[currentId][id]
+      minPathsEdges.add(edge)
+      edgesPath = GraphFind.getPaths(resume, predecessor, origin, minPathsEdges)
+      edgesPath.add(edge)
+
+      if first:
+        commonEdges = edgesPath
+        first = False
+      else:
+        commonEdges = commonEdges.intersection(edgesPath)
+
+    return commonEdges
+    
+

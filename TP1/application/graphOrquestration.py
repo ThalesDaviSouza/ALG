@@ -1,5 +1,6 @@
+from crossCutting.logger import Logger
 from domain.graph import Graph
-from infra.graphFind import GraphFind, Resumo
+from infra.graphFind import GraphFind
 from infra.graphReader import GraphReader
 
 
@@ -8,6 +9,6 @@ class GraphOrquestration:
     GraphReader.readInput(graph, path)
 
     resume = GraphFind.Dijkstra(graph, 1)
+    Logger.logFindResume(resume)
 
-    print(resume.distances)
-    print(resume.predecessor)
+    GraphFind.getMinPathEdgesId(resume, 1, graph.numVertices)

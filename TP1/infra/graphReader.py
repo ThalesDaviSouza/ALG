@@ -9,11 +9,11 @@ class GraphReader:
       graph.numVertices = numVertices
       graph.numEdges = numEdges
       
-      for line in file:
+      for id, line in enumerate(file):
         origin, dest, weight = map(int, line.strip().split())
-        GraphReader.readEdge(graph, origin, dest, weight)
+        GraphReader.readEdge(graph, id+1, origin, dest, weight)
 
-  def readEdge(graph: Graph, origin: int, dest: int, weight: int):
+  def readEdge(graph: Graph, id: int, origin: int, dest: int, weight: int):
     # Ciclos não são úteis para o problema em questão
     if origin == dest:
       return;
@@ -23,7 +23,7 @@ class GraphReader:
     # Caso não tenha nenhuma aresta adicionada
     # Adiciona ela aresta
     if actualEdge is None:
-      graph.addEdge(origin, dest, weight)
+      graph.addEdge(id, origin, dest, weight)
       return
     
     # Caso a aresta atual tenha um custo maior do que a atual
