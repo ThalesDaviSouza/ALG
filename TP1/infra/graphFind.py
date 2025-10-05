@@ -1,21 +1,16 @@
-from domain.edge import Edge
+from application.dtos.minPathResume import MinPathResumeDto
 from domain.graph import Graph
+from application.dtos.findResume import FindResumeDto
 import heapq
 
 INF = -1
 NOT_DEFINED = -2
 
-class FindResume:
-  def __init__(self, distances, predecessor: list[list], shortestPathsEdges):
-    self.distances = distances
-    self.predecessor = predecessor
-    self.shortestPathsEdges = shortestPathsEdges
-
 class GraphFind:
   def getArrayId(graphId: int):
     return graphId - 1
 
-  def Dijkstra(graph: Graph, origin: int) -> FindResume:
+  def Dijkstra(graph: Graph, origin: int) -> FindResumeDto:
     distances = [INF for _ in range(graph.numVertices)]
     predecessor = [[] for _ in range(graph.numVertices)]
     visited = [False for _ in range(graph.numVertices)]
@@ -59,16 +54,15 @@ class GraphFind:
           predecessor[destArrayId].append(current)
           shortestPathsEdges[destArrayId].append(edge.id)
     
-    return FindResume(distances, predecessor, shortestPathsEdges)
+    return FindResumeDto(distances, predecessor, shortestPathsEdges)
 
-  def getMinPathEdgesId(resume: FindResume, origin: int, dest: int):
+  def getMinPathEdgesId(resume: FindResumeDto, origin: int, dest: int):
     minPathsEdges = set()
     minPaths = GraphFind.getPaths(resume, dest, origin, minPathsEdges)
 
-    print(f'minPathsEdges: {minPathsEdges}')
-    print(f'minPaths: {minPaths}')
+    return MinPathResumeDto(minPathsEdges, minPaths)
 
-  def getPaths(resume: FindResume, current: int, origin: int, minPathsEdges: set):
+  def getPaths(resume: FindResumeDto, current: int, origin: int, minPathsEdges: set):
     if current == origin:
       return set()
     

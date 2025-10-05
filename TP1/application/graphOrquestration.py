@@ -9,6 +9,8 @@ class GraphOrquestration:
     GraphReader.readInput(graph, path)
 
     resume = GraphFind.Dijkstra(graph, 1)
-    Logger.logFindResume(resume)
+    minPathResume = GraphFind.getMinPathEdgesId(resume, 1, graph.numVertices)
 
-    GraphFind.getMinPathEdgesId(resume, 1, graph.numVertices)
+    Logger.logMinPathLength(resume, graph.numVertices)
+    Logger.logMinPathEdgesId(minPathResume)
+    Logger.logCriticalEdges(minPathResume)
