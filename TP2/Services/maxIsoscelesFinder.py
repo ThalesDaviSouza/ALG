@@ -4,41 +4,22 @@ class MaxIsoscelesFinder:
 
   def getAlturaMax(pilhas):
     numPilhas = len(pilhas)
-    alturasMaxsTeoricas = [UNDEFINED for _ in range(numPilhas)]
-    
-    for i in range(int(numPilhas/2)+1):
-      j = numPilhas-i-1
-      alturaMaxPosicao = i+1
 
-      alturaMaxPos = MaxIsoscelesFinder.getAlturaMaxPos(pilhas, i, alturaMaxPosicao, alturasMaxsTeoricas)
-      alturasMaxsTeoricas[i] = alturaMaxPos
-      
-      if j != i:
-        alturaMaxPos = MaxIsoscelesFinder.getAlturaMaxPos(pilhas, j, alturaMaxPosicao, alturasMaxsTeoricas)
-        alturasMaxsTeoricas[j] = alturaMaxPos
+    esquerda = [0] * numPilhas
+    direita = [0] * numPilhas
 
-    print(alturasMaxsTeoricas)
-    return max(alturasMaxsTeoricas)
+    # encontro a altura máxima andando pela esquerda
+    esquerda[0] = 1
+    for i in range(1, numPilhas):
+      esquerda[i] = min(pilhas[i], esquerda[i-1] + 1)
 
-  def getAlturaMaxPos(pilhas, index, alturaMaxPosicao, alturasMaxsTeoricas):
-    if index == 0 or index == (len(pilhas)-1):
-      return 1
-    
-    alturaMaxIsolada = min(alturaMaxPosicao, pilhas[index])
+    # encontro a altura máxima andando pela direita
+    direita[numPilhas-1] = 1
+    for i in range(numPilhas-2, -1, -1):
+      direita[i] = min(pilhas[i], direita[i+1] + 1)
 
-    alturaMaxPos = alturaMaxIsolada
-    
-    # esquerda
-    if alturasMaxsTeoricas[index-1] != UNDEFINED:
-      alturaMaxPos = min(alturaMaxPos, alturasMaxsTeoricas[index-1]+1) 
-    else:
-      alturaMaxPos = min(alturaMaxPos, pilhas[index-1]+1)
-    
-    # direita
-    if alturasMaxsTeoricas[index+1] != UNDEFINED:
-      alturaMaxPos = min(alturaMaxPos, alturasMaxsTeoricas[index+1]+1) 
-    else:
-      alturaMaxPos = min(alturaMaxPos, pilhas[index+1]+1)
-    
-    return alturaMaxPos
+    # encontro a altura máxima para o ponto
+    alturas = [min(esquerda[i], direita[i]) for i in range(numPilhas)]
+
+    return max(alturas)
 

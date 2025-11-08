@@ -1,5 +1,3 @@
-import math
-
 class Point:
   def __init__(self, x: float, y: float, id_: int):
     if not isinstance(x, (int, float)):
@@ -18,7 +16,7 @@ class Point:
 
 
 def distancia(p1: Point, p2: Point):
-  return math.dist((p1.x, p1.y), (p2.x, p2.y))
+  return  ((p1.x - p2.x)**2 + (p1.y - p2.y)**2) ** 0.5
 
 
 def perimetro(a: Point, b: Point, c: Point):
