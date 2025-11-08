@@ -1,8 +1,10 @@
+UNDEFINED = -1
+
 class MaxIsoscelesFinder:
-  
+
   def getAlturaMax(pilhas):
     numPilhas = len(pilhas)
-    alturasMaxsTeoricas = [-1 for _ in range(numPilhas)]
+    alturasMaxsTeoricas = [UNDEFINED for _ in range(numPilhas)]
     
     for i in range(int(numPilhas/2)+1):
       j = numPilhas-i-1
@@ -27,17 +29,16 @@ class MaxIsoscelesFinder:
     alturaMaxPos = alturaMaxIsolada
     
     # esquerda
-    if alturasMaxsTeoricas[index-1] != -1:
+    if alturasMaxsTeoricas[index-1] != UNDEFINED:
       alturaMaxPos = min(alturaMaxPos, alturasMaxsTeoricas[index-1]+1) 
     else:
       alturaMaxPos = min(alturaMaxPos, pilhas[index-1]+1)
     
     # direita
-    if alturasMaxsTeoricas[index+1] != -1:
+    if alturasMaxsTeoricas[index+1] != UNDEFINED:
       alturaMaxPos = min(alturaMaxPos, alturasMaxsTeoricas[index+1]+1) 
     else:
       alturaMaxPos = min(alturaMaxPos, pilhas[index+1]+1)
     
-
     return alturaMaxPos
 
