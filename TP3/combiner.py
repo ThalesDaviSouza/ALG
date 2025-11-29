@@ -1,14 +1,16 @@
 def get_conflicts_right(nLeft, adj, mapLeft, mapRight):
-  conflictsRigth = [0] * nLeft
+  conflictsRight = [0] * nLeft
 
-  for iL, vL in enumerate(mapLeft):
+  for iLeft, verticeLeft in enumerate(mapLeft):
     mask = 0
-    for jR, vR in enumerate(mapRight):
-      if (adj[vL] >> vR) & 1:
-        mask |= (1 << jR)
-    conflictsRigth[iL] = mask
+    for jRight, verticeRight in enumerate(mapRight):
+      # Verifica se há conflito entre vértice da esquerda e vértice da direita
+      if (adj[verticeLeft] >> verticeRight) & 1:
+        # Seta bit na posição j para indicar conflito
+        mask |= (1 << jRight)
+    conflictsRight[iLeft] = mask
 
-  return conflictsRigth
+  return conflictsRight
 
 
 def combine_sides(
@@ -24,50 +26,57 @@ def combine_sides(
   best_size = 0
   best_vertices = []
 
+  # Máscara com todos os vértices da direita (todos bits = 1)
   allRightsEdges = (1 << nRight) - 1
 
+  # Itera por todos os subconjuntos da parte esquerda
   for S in range(1 << nLeft):
-    # verifica se S é independente
+    # Verifica se S é conjunto independente
     independent = True
     for v in range(nLeft):
       if (S >> v) & 1:
+        # Verifica se vértice v tem conflito com outros vértices em S
         if S & adjLeft[v]:
           independent = False
           break
     if not independent:
       continue
 
-    # calcula proibidos
-    forbidden = 0
+    # Calcula vértices que tem conflitos na direita (conflitam com escolhas da esquerda)
+    conflicts = 0
     for v in range(nLeft):
       if (S >> v) & 1:
-        forbidden |= conflictR[v]
+        # Adiciona todos os conflitos do vértice v da esquerda
+        conflicts |= conflictR[v]
 
-    allowed = allRightsEdges & ~forbidden
+    # Vértices permitidos na direita = todos que não tem conflitos com vertices da esquerda
+    allowed = allRightsEdges & ~conflicts
 
-    # combina com R
+    # Tamanho total = vértices da esquerda + melhor solução da direita permitida
     size_total = bin(S).count("1") + sizes[allowed]
 
-    # monta solução
+    # Constrói a solução completa
     solution = []
 
-    # esquerda
+    # Adiciona vértices da esquerda selecionados
     for v in range(nLeft):
       if (S >> v) & 1:
         solution.append(mapLeft[v])
 
-    # direita
-    maskR = masks[allowed]
+    # Adiciona vértices da direita da solução ótima
+    maskRight = masks[allowed]
     for j in range(nRight):
-      if (maskR >> j) & 1:
+      if (maskRight >> j) & 1:
         solution.append(mapRight[j])
 
     solution.sort()
 
+    # Atualiza melhor solução encontrada
     if size_total > best_size:
       best_size = size_total
       best_vertices = solution
     elif size_total == best_size:
+      # Desempate: escolhe a solução lexicograficamente menor
       if solution < best_vertices:  
         best_vertices = solution
 
